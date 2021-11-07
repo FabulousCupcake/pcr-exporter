@@ -117,49 +117,52 @@ function createWindow() {
   });
 }
 
-const proxy = new SWProxy();
+function initProxy() {
+  const proxy = new SWProxy();
+  global.proxy = proxy;
 
-proxy.on('error', () => {});
+  proxy.on('error', () => {});
 
-ipcMain.on('proxyIsRunning', (event) => {
-  event.returnValue = proxy.isRunning();
-});
-
-ipcMain.on('proxyGetInterfaces', (event) => {
-  event.returnValue = proxy.getInterfaces();
-});
-
-ipcMain.on('proxyStart', () => {
-  proxy.start(config.Config.Proxy.port);
-});
-
-ipcMain.on('proxyStop', () => {
-  proxy.stop();
-});
-
-ipcMain.on('getCert', async () => {
-  await proxy.copyCertToPublic();
-});
-
-ipcMain.on('reGenCert', async () => {
-  await proxy.reGenCert();
-});
-
-ipcMain.on('logGetEntries', (event) => {
-  event.returnValue = proxy.getLogEntries();
-});
-
-ipcMain.on('updateConfig', () => {
-  storage.set('Config', config.Config, (error) => {
-    if (error) throw error;
+  ipcMain.on('proxyIsRunning', (event) => {
+    event.returnValue = proxy.isRunning();
   });
-});
 
-ipcMain.on('getFolderLocations', (event) => {
-  event.returnValue = {
-    settings: app.getPath('userData'),
-  };
-});
+  ipcMain.on('proxyGetInterfaces', (event) => {
+    event.returnValue = proxy.getInterfaces();
+  });
+
+  ipcMain.on('proxyStart', () => {
+    proxy.start(config.Config.Proxy.port);
+  });
+
+  ipcMain.on('proxyStop', () => {
+    proxy.stop();
+  });
+
+  ipcMain.on('getCert', async () => {
+    await proxy.copyCertToPublic();
+  });
+
+  ipcMain.on('reGenCert', async () => {
+    await proxy.reGenCert();
+  });
+
+  ipcMain.on('logGetEntries', (event) => {
+    event.returnValue = proxy.getLogEntries();
+  });
+
+  ipcMain.on('updateConfig', () => {
+    storage.set('Config', config.Config, (error) => {
+      if (error) throw error;
+    });
+  });
+
+  ipcMain.on('getFolderLocations', (event) => {
+    event.returnValue = {
+      settings: app.getPath('userData'),
+    };
+  });
+}
 
 global.plugins = [];
 
@@ -179,7 +182,7 @@ function loadPlugins() {
       if (plug.defaultConfig && plug.pluginName && plug.pluginDescription && typeof plug.init === 'function') {
         plugins.push(plug);
       } else {
-        proxy.log({
+        global.proxy.log({
           type: 'error',
           source: 'proxy',
           message: `Invalid plugin ${file}. Missing one or more required module exports.`,
@@ -209,9 +212,9 @@ function loadPlugins() {
     });
     config.ConfigDetails.Plugins[plug.pluginName] = plug.defaultConfigDetails || {};
     try {
-      plug.init(proxy, config);
+      plug.init(global.proxy, config);
     } catch (error) {
-      proxy.log({
+      global.proxy.log({
         type: 'error',
         source: 'proxy',
         message: `Error initializing ${plug.pluginName}: ${error.message}`,
@@ -223,6 +226,8 @@ function loadPlugins() {
 }
 
 app.on('ready', () => {
+  initProxy()
+
   app.setAppUserModelId(process.execPath);
   createWindow();
 
@@ -260,7 +265,7 @@ app.on('ready', () => {
     global.plugins = loadPlugins();
 
     if (process.env.autostart || global.config.Config.Proxy.autoStart) {
-      proxy.start(process.env.port || config.Config.Proxy.port);
+      global.proxy.start(process.env.port || config.Config.Proxy.port);
     }
   });
 });

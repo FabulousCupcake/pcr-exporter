@@ -42,3 +42,9 @@ body {
 .content-area {
   max-width: 800px;
 }
+
+.ui.label.image.horizontal > .detail {
+  padding-top: .4em;
+  padding-bottom: .4em;
+  margin-top: -.4em;
+}

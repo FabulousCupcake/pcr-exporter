@@ -24,21 +24,11 @@
             "x64",
             "ia32"
           ]
-        },
-        {
-          "target": "portable",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
         }
       ]
     },
     "nsis": {
       "artifactName": "${productName}-Setup-${version}-${os}.${ext}"
-    },
-    "portable": {
-      "artifactName": "${productName}-Portable-${version}-${os}.${ext}"
     },
     "extraFiles": [
       {

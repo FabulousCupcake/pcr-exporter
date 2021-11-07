@@ -13,12 +13,12 @@ const { promisify } = require('util');
 const sleep = promisify(setTimeout);
 
 const CERT_MAX_LIFETIME_IN_MONTHS = 24;
-const API_HOST = "priconne-redive.us";
+const API_HOST = 'priconne-redive.us';
 
 class SWProxy extends EventEmitter {
   constructor() {
     super();
-    this.ivKey = "";
+    this.ivKey = '';
     this.httpServer = null;
     this.proxy = null;
     this.logEntries = [];
@@ -36,7 +36,7 @@ class SWProxy extends EventEmitter {
 
     this.proxy.onRequest(function (ctx, callback) {
       if (ctx.clientToProxyRequest.headers.host !== API_HOST) {
-        return callback();  // Not pricon, don't care
+        return callback(); // Not pricon, don't care
       }
 
       // Automatically decompress if gzipped
@@ -67,7 +67,7 @@ class SWProxy extends EventEmitter {
 
         if (global.config.Config.Configuration.ivKey) {
           // Attempt decrypt here
-          console.log("Attempt decrypt here");
+          console.log('Attempt decrypt here');
         } else {
           // Otherwise just emit raw
           self.emit(endpoint, reqRaw, resRaw);

@@ -1,8 +1,8 @@
 // Plugin Metadata
-const defaultConfig = { enabled: false };
-const defaultConfigDetails = {};
 const pluginName = 'ExamplePlugin';
 const pluginDescription = 'This plugin shows you all API events in the log';
+const defaultConfig = { enabled: false };
+const defaultConfigDetails = {};
 
 // Actual plugin starts here
 const processEveryCommand = (proxy, req) => {

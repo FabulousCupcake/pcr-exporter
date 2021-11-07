@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 const storage = require('electron-json-storage');
 const windowStateKeeper = require('electron-window-state');
 const _ = require('lodash');
-const SWProxy = require('./proxy/SWProxy');
+const Proxy = require('./proxy/Proxy');
 
 const path = require('path');
 const url = require('url');
@@ -126,7 +126,7 @@ function createWindow() {
 }
 
 function initProxy() {
-  const proxy = new SWProxy();
+  const proxy = new Proxy();
   global.proxy = proxy;
 
   proxy.on('error', () => {});

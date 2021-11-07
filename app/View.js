@@ -4,7 +4,8 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 
 import Layout from './pages/Layout';
 import Logs from './pages/Logs';
-import Settings from './pages/Settings';
+import Config from './pages/Config';
+import Preferences from './pages/Preferences';
 import Help from './pages/Help';
 
 ReactDOM.render(
@@ -12,7 +13,8 @@ ReactDOM.render(
     <Layout>
       <Switch>
         <Route exact path="/" component={Logs} />
-        <Route exact path="/settings" component={Settings} />
+        <Route exact path="/config" component={Config} />
+        <Route exact path="/preferences" component={Preferences} />
         <Route exact path="/help" component={Help} />
         <Redirect to="/" />
       </Switch>

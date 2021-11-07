@@ -62,3 +62,14 @@ body {
   left: 5px;
   color: #ffffff;
 }
+
+
+.compact-button {
+  position: absolute !important;
+  top: 1em;
+  right: 1em;
+}
+
+.content-area {
+  max-width: 800px;
+}

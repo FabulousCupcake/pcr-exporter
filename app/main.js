@@ -27,11 +27,14 @@ let defaultConfigDetails = {
     App: {
       debug: { label: 'Show Debug Messages' },
       clearLogOnLogin: { label: 'Clear Log on every login' },
-      maxLogEntries: { label: 'Maximum amount of log entries.' },
+      maxLogEntries: { label: 'Maximum amount of log entries' },
       httpsMode: { label: 'HTTPS mode' },
-      minimizeToTray: { label: 'Minimize to System Tray' },
+      minimizeToTray: { label: 'Minimize to system tray' },
     },
-    Proxy: { autoStart: { label: 'Start proxy automatically' } },
+    Proxy: {
+      autoStart: { label: 'Start proxy automatically' },
+      ivKey: "",
+    },
     Plugins: {},
   },
 };

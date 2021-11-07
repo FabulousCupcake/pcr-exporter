@@ -15,27 +15,28 @@ class Config extends React.Component {
   constructor() {
     super();
     this.state = {
-      filesPath: config.Config.Configuration.ivKey,
+      ivKey: config.Config.Configuration.ivKey,
       confirmCertDialog: false,
     };
   }
 
-  openDialog(e) {
-    e.preventDefault();
-    dialog
-      .showOpenDialog({
-        properties: ['openDirectory'],
-      })
-      .then((result) => {
-        if (!result.canceled) {
-          this.setState({ filesPath: result.filePaths.toString() });
-          config.Config.Configuration.filesPath = result.filePaths.toString();
-          ipcRenderer.send('updateConfig');
-        }
-      });
+  componentDidMount() {
+    ipcRenderer.on('ivKeyObtained', (event, message) => {
+      this.updateIvKey(message);
+    });
   }
 
-  openCertCinfirmDialog() {
+  updateIvKey(key) {
+    this.setState({ ivKey: key });
+    config.Config.Configuration.ivKey = key;
+    ipcRenderer.send('updateConfig');
+  }
+
+  resetIvKey() {
+    this.updateIvKey('');
+  }
+
+  openCertConfirmDialog() {
     this.setState({ confirmCertDialog: true });
   }
 
@@ -79,13 +80,13 @@ class Config extends React.Component {
         <Form>
           <Form.Input
             label="IV Key"
-            action={<Button class="ui button" content="Reset" onclick={'                        '} />}
+            action={<Button class="ui button" content="Reset" onclick={this.resetIvKey.bind(this)} />}
             value={this.state.ivKey}
             placeholder="This will be filled automatically. Read Help for more details."
             readOnly
             fluid
           />
-          <Button content="Regenerate Cert" icon="refresh" size="small" labelPosition="left" onClick={this.openCertCinfirmDialog.bind(this)} />
+          <Button content="Regenerate Cert" icon="refresh" size="small" labelPosition="left" onClick={this.openCertConfirmDialog.bind(this)} />
         </Form>
 
         <Header as="h2">Plugins</Header>

@@ -22,12 +22,12 @@ let defaultConfig = {
       debug: false,
       clearLogOnLogin: false,
       maxLogEntries: 100,
-      minimizeToTray: false
+      minimizeToTray: false,
     },
     Configuration: {
-      ivKey: "",
+      ivKey: '',
       port: 8080,
-      autoStart: false
+      autoStart: false,
     },
     Plugins: {},
   },
@@ -234,7 +234,7 @@ function loadPlugins() {
 }
 
 app.on('ready', () => {
-  initProxy()
+  initProxy();
 
   app.setAppUserModelId(process.execPath);
   createWindow();

@@ -14,11 +14,13 @@ const { decrypt_request, decrypt_response } = require('./smon_decryptor');
 const { promisify } = require('util');
 const sleep = promisify(setTimeout);
 
-const CERT_MAX_LIFETIME_IN_MONTHS = 12;
+const CERT_MAX_LIFETIME_IN_MONTHS = 24;
+const API_HOST = "priconne-redive.us";
 
 class SWProxy extends EventEmitter {
   constructor() {
     super();
+    this.ivKey = "";
     this.httpServer = null;
     this.proxy = null;
     this.logEntries = [];
@@ -35,60 +37,50 @@ class SWProxy extends EventEmitter {
     });
 
     this.proxy.onRequest(function (ctx, callback) {
-      if (ctx.clientToProxyRequest.url.includes('/api/gateway_c2.php')) {
-        ctx.use(Proxy.gunzip);
-        ctx.SWRequestChunks = [];
-        ctx.SWResponseChunks = [];
-        ctx.onRequestData(function (ctx, chunk, callback) {
-          ctx.SWRequestChunks.push(chunk);
-          return callback(null, chunk);
-        });
-
-        ctx.onResponseData(function (ctx, chunk, callback) {
-          ctx.SWResponseChunks.push(chunk);
-          return callback(null, chunk);
-        });
-        ctx.onResponseEnd(function (ctx, callback) {
-          let reqData;
-          let respData;
-
-          try {
-            reqData = decrypt_request(Buffer.concat(ctx.SWRequestChunks).toString());
-            respData = decrypt_response(Buffer.concat(ctx.SWResponseChunks).toString());
-          } catch (e) {
-            // Error decrypting the data, log and do not fire an event
-            self.log({ type: 'debug', source: 'proxy', message: `Error decrypting request data - ignoring. ${e}` });
-            return callback();
-          }
-
-          const { command } = respData;
-          if (config.Config.App.clearLogOnLogin && (command === 'HubUserLogin' || command === 'GuestLogin')) {
-            self.clearLogs();
-          }
-
-          // Emit events, one for the specific API command and one for all commands
-          self.emit(command, reqData, respData);
-          self.emit('apiCommand', reqData, respData);
-          return callback();
-        });
+      if (ctx.clientToProxyRequest.headers.host !== API_HOST) {
+        return callback();  // Not pricon, don't care
       }
+
+      // Automatically decompress if gzipped
+      ctx.use(Proxy.gunzip);
+
+      // Need to manually collect request body
+      // Under ctx since this function will be called multiple times
+      //   and ctx persists for this specific connection
+      ctx.reqChunks = [];
+      ctx.onRequestData(function (ctx, chunk, callback) {
+        ctx.reqChunks.push(chunk);
+        return callback(null, chunk);
+      });
+
+      // Same with response
+      ctx.resChunks = [];
+      ctx.onResponseData(function (ctx, chunk, callback) {
+        ctx.resChunks.push(chunk);
+        return callback(null, chunk);
+      });
+
+      // When request is fully finished, we can start reading them
+      ctx.onResponseEnd(function (ctx, callback) {
+        const endpoint = ctx.clientToProxyRequest.url;
+        const reqRaw = Buffer.concat(ctx.reqChunks);
+        const resRaw = Buffer.concat(ctx.resChunks);
+        self.emit('debug', endpoint, reqRaw, resRaw);
+
+        if (global.config.Config.Configuration.ivKey) {
+          // Attempt decrypt here
+          console.log("Attempt decrypt here");
+        } else {
+          // Otherwise just emit raw
+          self.emit(endpoint, reqRaw, resRaw);
+        }
+
+        return callback();
+      });
+
       return callback();
     });
-    this.proxy.onConnect(function (req, socket, head, callback) {
-      const serverUrl = url.parse(`https://${req.url}`);
-      if (req.url.includes('qpyou.cn') && config.Config.App.httpsMode) {
-        return callback();
-      } else {
-        const srvSocket = net.connect(serverUrl.port, serverUrl.hostname, () => {
-          socket.write('HTTP/1.1 200 Connection Established\r\n' + 'Proxy-agent: Node-Proxy\r\n' + '\r\n');
-          srvSocket.pipe(socket);
-          socket.pipe(srvSocket);
-        });
-        srvSocket.on('error', () => {});
 
-        socket.on('error', () => {});
-      }
-    });
     this.proxy.listen({ host: '::', port, sslCaDir: path.join(app.getPath('userData'), 'swcerts') }, async (e) => {
       this.log({ type: 'info', source: 'proxy', message: `Now listening on port ${port}` });
       const expired = await this.checkCertExpiration();
@@ -103,7 +95,7 @@ class SWProxy extends EventEmitter {
     });
 
     if (process.env.autostart) {
-      console.log(`SW Exporter Proxy is listening on port ${port}`);
+      console.log(`Priconne Exporter Proxy is listening on port ${port}`);
     }
     win.webContents.send('proxyStarted');
   }
@@ -145,7 +137,7 @@ class SWProxy extends EventEmitter {
     const fileExists = await fs.pathExists(path.join(app.getPath('userData'), 'swcerts', 'certs', 'ca.pem'));
 
     if (fileExists) {
-      const copyPath = path.join(global.config.Config.App.filesPath, 'cert', 'ca.pem');
+      const copyPath = path.join(global.config.Config.Preferences.filesPath, 'cert', 'ca.pem');
       await fs.copy(path.join(app.getPath('userData'), 'swcerts', 'certs', 'ca.pem'), copyPath);
       this.log({
         type: 'success',
@@ -167,7 +159,7 @@ class SWProxy extends EventEmitter {
       await this.stop();
     }
 
-    await this.start(process.env.port || config.Config.Proxy.port);
+    await this.start(process.env.port || config.Config.Configuration.port);
     // make sure the root cert was generated
     await sleep(1000);
     await this.copyCertToPublic();
@@ -191,7 +183,7 @@ class SWProxy extends EventEmitter {
     entry.date = new Date().toLocaleTimeString();
     this.logEntries = [entry, ...this.logEntries];
 
-    const maxLogEntries = parseInt(config.Config.App.maxLogEntries) || 0;
+    const maxLogEntries = parseInt(config.Config.Preferences.maxLogEntries) || 0;
     if (this.logEntries.length > maxLogEntries && maxLogEntries !== 0) {
       this.logEntries.pop();
     }

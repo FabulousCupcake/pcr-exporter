@@ -46,7 +46,7 @@ class Head extends React.Component {
 
   changePort(e) {
     const port = Number(e.target.value);
-    config.Config.Proxy.port = port;
+    config.Config.Configuration.port = port;
     ipcRenderer.send('updateConfig');
   }
 
@@ -58,7 +58,7 @@ class Head extends React.Component {
           <Select label="Interfaces" options={interfaces} defaultValue={0} />
         </Menu.Item>
         <Menu.Item>
-          <Input label="Port" defaultValue={config.Config.Proxy.port} onChange={this.changePort.bind(this)} />
+          <Input label="Port" defaultValue={config.Config.Configuration.port} onChange={this.changePort.bind(this)} />
         </Menu.Item>
         <Menu.Item position="right">
           <Button content="Get Cert" icon="share" labelPosition="right" onClick={this.getCert.bind(this)} />

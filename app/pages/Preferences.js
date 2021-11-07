@@ -15,8 +15,7 @@ class Preferences extends React.Component {
   constructor() {
     super();
     this.state = {
-      filesPath: config.Config.App.filesPath,
-      confirmCertDialog: false,
+      filesPath: config.Config.Preferences.filesPath,
     };
   }
 
@@ -29,7 +28,7 @@ class Preferences extends React.Component {
       .then((result) => {
         if (!result.canceled) {
           this.setState({ filesPath: result.filePaths.toString() });
-          config.Config.App.filesPath = result.filePaths.toString();
+          config.Config.Preferences.filesPath = result.filePaths.toString();
           ipcRenderer.send('updateConfig');
         }
       });
@@ -62,12 +61,11 @@ class Preferences extends React.Component {
             fluid
           />
           <Form.Input label="Settings Path" defaultValue={folderLocations.settings} fluid readOnly />
-          <SettingsItem section="Proxy" setting="autoStart" type="checkbox" />
-          <SettingsItem section="App" setting="debug" type="checkbox" />
-          <SettingsItem section="App" setting="minimizeToTray" type="checkbox" />
-          <SettingsItem section="App" setting="clearLogOnLogin" type="checkbox" />
-          <SettingsItem section="App" setting="httpsMode" type="checkbox" />
-          <SettingsItem section="App" setting="maxLogEntries" type="input" />
+          <SettingsItem section="Preferences" setting="autoStart" type="checkbox" />
+          <SettingsItem section="Preferences" setting="debug" type="checkbox" />
+          <SettingsItem section="Preferences" setting="minimizeToTray" type="checkbox" />
+          <SettingsItem section="Preferences" setting="clearLogOnLogin" type="checkbox" />
+          <SettingsItem section="Preferences" setting="maxLogEntries" type="input" />
         </Form>
       </React.Fragment>
     );

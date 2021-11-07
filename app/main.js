@@ -17,23 +17,29 @@ global.appVersion = app.getVersion();
 let defaultFilePath = path.join(app.getPath('desktop'), `${app.name} Files`);
 let defaultConfig = {
   Config: {
-    App: { filesPath: defaultFilePath, debug: false, clearLogOnLogin: false, maxLogEntries: 100, httpsMode: true, minimizeToTray: false },
-    Proxy: { port: 8080, autoStart: false },
+    Preferences: {
+      filesPath: defaultFilePath,
+      debug: false,
+      clearLogOnLogin: false,
+      maxLogEntries: 100,
+      minimizeToTray: false
+    },
+    Configuration: {
+      ivKey: "",
+      port: 8080,
+      autoStart: false
+    },
     Plugins: {},
   },
 };
 let defaultConfigDetails = {
   ConfigDetails: {
-    App: {
-      debug: { label: 'Show Debug Messages' },
-      clearLogOnLogin: { label: 'Clear Log on every login' },
-      maxLogEntries: { label: 'Maximum amount of log entries' },
-      httpsMode: { label: 'HTTPS mode' },
-      minimizeToTray: { label: 'Minimize to system tray' },
-    },
-    Proxy: {
+    Preferences: {
       autoStart: { label: 'Start proxy automatically' },
-      ivKey: "",
+      clearLogOnLogin: { label: 'Clear Log on every login' },
+      debug: { label: 'Show Debug Messages' },
+      maxLogEntries: { label: 'Maximum amount of log entries' },
+      minimizeToTray: { label: 'Minimize to system tray' },
     },
     Plugins: {},
   },

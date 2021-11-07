@@ -15,7 +15,7 @@ class Config extends React.Component {
   constructor() {
     super();
     this.state = {
-      filesPath: config.Config.App.filesPath,
+      filesPath: config.Config.Configuration.ivKey,
       confirmCertDialog: false,
     };
   }
@@ -29,7 +29,7 @@ class Config extends React.Component {
       .then((result) => {
         if (!result.canceled) {
           this.setState({ filesPath: result.filePaths.toString() });
-          config.Config.App.filesPath = result.filePaths.toString();
+          config.Config.Configuration.filesPath = result.filePaths.toString();
           ipcRenderer.send('updateConfig');
         }
       });

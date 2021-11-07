@@ -9,8 +9,6 @@ const uuidv4 = require('uuid/v4');
 const Proxy = require('http-mitm-proxy');
 const { differenceInMonths } = require('date-fns');
 
-const { decrypt_request, decrypt_response } = require('./smon_decryptor');
-
 const { promisify } = require('util');
 const sleep = promisify(setTimeout);
 

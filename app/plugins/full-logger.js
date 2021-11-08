@@ -9,22 +9,27 @@ const pluginName = 'Full Logger';
 const pluginDescription = 'Dumps data for every API event into a file';
 const defaultConfig = {
   enabled: false,
-  deleteFileOnQuit: false,
+  deleteFileOnQuit: true,
   dumpRaw: false,
+  dumpDecrypted: true,
   logDecryptedRequest: false,
+  logDecryptedResponse: true,
 };
 const defaultConfigDetails = {
   deleteFileOnQuit: { label: 'Delete log file before quitting app' },
-  dumpRaw: { label: 'Always dump raw, undecrypted data' },
-  logDecryptedRequest: { label: 'Only log decrypted response body' },
+  dumpRaw: { label: 'Dump raw, unencrypted request and response body' },
+  dumpDecrypted: { label: 'Dump decrypted request and response body' },
+  logDecryptedRequest: { label: 'Print decrypted request body in Logs page' },
+  logDecryptedResponse: { label: 'Print decrypted response body in Logs page' },
 };
+const cfg = config.Config.Plugins[pluginName];
 
 const RAW_LOG_FILENAME = 'raw_log.txt';
 const DECRYPTED_LOG_FILENAME = 'log.txt';
 
 // Actual plugin starts here
 const log = (filename, endpoint, req, res) => {
-  const logfile = fs.createWriteStream(path.join(config.Config.App.filesPath, filename), {
+  const logfile = fs.createWriteStream(path.join(config.Config.Preferences.filesPath, filename), {
     flags: 'a',
     autoClose: true,
   });
@@ -40,11 +45,11 @@ ${JSON.stringify(res)}
   logfile.end();
 };
 
-// Decrypt attempts to decrypt the traffic with the obtained
-const decrypt = data => {
+// decrypt attempts to decrypt the traffic with the obtained
+const decrypt = (data) => {
   const aesBody = data.subarray(0, data.length - 32);
   const aesKey = data.subarray(data.length - 32, data.length);
-  const ivKey = Buffer.from(global.config.Config.Configuration.ivKey, "utf8");
+  const ivKey = Buffer.from(global.config.Config.Configuration.ivKey, 'utf8');
 
   const rawBody = new aesjs.ModeOfOperation.cbc(aesKey, ivKey).decrypt(aesBody);
   const body = rawBody.subarray(0, rawBody.length - rawBody[rawBody.length - 1]);
@@ -52,63 +57,66 @@ const decrypt = data => {
   return msgpack;
 };
 
+// logDecrypted attempst to decrypt and print/dump the results
 const logDecrypted = (endpoint, req, rawRes) => {
   const res = Buffer.from(rawRes.toString('utf8'), 'base64');
 
   try {
     const reqBody = decrypt(req);
-    if (global.config.Config.Plugins.logDecryptedRequest) {
+    if (cfg.logDecryptedRequest) {
       proxy.log({
         type: 'info',
         source: 'plugin',
         name: pluginName,
-        message: `send: <Segment piled><code>${endpoint}</code><pre>${JSON.stringify(reqBody)}</pre></Segment>`,
+        message: `send: <pre>${JSON.stringify(reqBody, null, 2)}</pre>`,
+        endpoint,
       });
     }
 
     const resBody = decrypt(res);
-    proxy.log({
-      type: 'info',
-      source: 'plugin',
-      name: pluginName,
-      message: `recv: <code>${endpoint}</code><pre>${JSON.stringify(resBody)}</pre>`,
-    });
-    log(DECRYPTED_LOG_FILENAME, endpoint, reqBody, resBody)
+    if (cfg.logDecryptedResponse) {
+      proxy.log({
+        type: 'info',
+        source: 'plugin',
+        name: pluginName,
+        message: `recv: <pre>${JSON.stringify(resBody, null, 2)}</pre>`,
+        endpoint,
+      });
+    }
+
+    if (!cfg.dumpDecrypted) return;
+    log(DECRYPTED_LOG_FILENAME, endpoint, JSON.stringify(reqBody), JSON.stringify(resBody));
   } catch (err) {
     proxy.log({
       type: 'error',
       source: 'plugin',
       name: pluginName,
       message: `Failed decrypting ${endpoint}: ${err}`,
+      endpoint,
     });
   }
 };
 
+// debugHandler handles `debug` proxy event
 const debugHandler = (endpoint, req, res) => {
-  if (config.Config.Plugins[pluginName].enabled) {
+  if (cfg.enabled) {
     log(RAW_LOG_FILENAME, endpoint, req, res);
 
-    if (global.config.Config.Preferences.debug) {
-      proxy.log({
-        type: 'debug',
-        source: 'plugin',
-        name: pluginName,
-        message: `${endpoint}: sent ${req.length} / recv ${res.length}`,
-      });
-    }
-
-    if (global.config.Config.Plugins.dumpRaw) return;
     if (!global.config.Config.Configuration.ivKey) return;
-    logDecrypted(endpoint, req, res);
+    if (cfg.dumpDecrypted || cfg.logDecryptedRequest || cfg.logDecryptedResponse) {
+      logDecrypted(endpoint, req, res);
+    }
   }
 };
 
+// quitHandler handels `will-quit` app event
 const quitHandler = () => {
-  if (config.Config.Plugins[pluginName].deleteFileOnQuit) {
-    fs.unlinkSync(path.join(config.Config.App.filesPath, 'full_log.txt'));
+  if (cfg.deleteFileOnQuit) {
+    fs.unlinkSync(path.join(config.Config.Preferences.filesPath, 'full_log.txt'));
   }
 };
 
+// init
 const init = (proxy, config) => {
   proxy.on('debug', debugHandler);
   app.on('will-quit', quitHandler);

@@ -26,39 +26,40 @@ body {
   margin-left: 15px !important;
 }
 
-.rune .content .star-line .star img {
-  width: 11px;
-}
-
-.rune .ui.image.label {
-  padding: 2px 0 0 6px;
-  text-align: center;
-}
-
-.rune .ui.image.label > img {
-  margin: 0 auto;
-  max-width: none;
-}
-
-.rune .ui.image.label span.upgrade {
-  background: rgba(0, 0, 0, 0.15);
-  border-radius: 0 0 2px 2px;
-  bottom: 0;
-  padding: 0 2px;
-  position: absolute;
-  right: 0;
-  width: 100%;
-}
-
-.settings-plugins .icon {
-  font-size: 16px !important;
-  margin-top: -5px;
-  margin-left: 5px;
-}
-
 #version {
   bottom: 68px;
   position: absolute;
   left: 5px;
-  color: #ffffff;
+  color: rgba(255,255,255, 0.4);
+}
+
+.compact-button {
+  position: absolute !important;
+  top: 1em;
+  right: 1em;
+}
+
+.content-area {
+  max-width: 800px;
+}
+
+.ui.label.image.horizontal > .detail {
+  padding-top: .4em;
+  padding-bottom: .4em;
+  margin-top: -.4em;
+}
+
+pre {
+  max-width: 800px;
+  max-height: 100px;
+  overflow-y: scroll;
+  white-space: pre-wrap;
+
+  font-size: 90%;
+  line-height: 1;
+  padding: 1em;
+  margin: 1em 0;
+  box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
+  border: 1px solid rgba(34,36,38,.15);
+  border-radius: .28571429rem;
 }

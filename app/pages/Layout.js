@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 
-import { Segment, Menu, Icon, Button } from 'semantic-ui-react';
+import { Segment, Menu, Icon, Button, Container } from 'semantic-ui-react';
 import Mousetrap from 'mousetrap';
 
 import Head from '../components/Head';
@@ -19,10 +19,14 @@ class Layout extends React.Component {
     });
 
     Mousetrap.bind(['command+2', 'alt+2'], () => {
-      this.navigate('settings', 'settings');
+      this.navigate('config', 'config');
     });
 
     Mousetrap.bind(['command+3', 'alt+3'], () => {
+      this.navigate('preferences', 'preferences');
+    });
+
+    Mousetrap.bind(['command+4', 'alt+4'], () => {
       this.navigate('help', 'help');
     });
 
@@ -51,18 +55,28 @@ class Layout extends React.Component {
         {this.state.compactMode ? null : (
           <Menu fixed="left" vertical inverted width="thin" className="side-menu">
             <Menu.Item name="logs" link active={this.state.activeItem === 'logs'} data-path="/" onClick={this.navigateFromElement.bind(this)}>
-              <Icon name="home" />
+              <Icon name="file alternate" />
               Logs
             </Menu.Item>
             <Menu.Item
-              name="settings"
+              name="config"
               link
-              active={this.state.activeItem === 'settings'}
-              data-path="settings"
+              active={this.state.activeItem === 'config'}
+              data-path="config"
               onClick={this.navigateFromElement.bind(this)}
             >
-              <Icon name="settings" />
-              Settings
+              <Icon name="configure" />
+              Configuration
+            </Menu.Item>
+            <Menu.Item
+              name="preferences"
+              link
+              active={this.state.activeItem === 'preferences'}
+              data-path="preferences"
+              onClick={this.navigateFromElement.bind(this)}
+            >
+              <Icon name="paint brush" />
+              Preferences
             </Menu.Item>
             <Menu.Item name="help" link active={this.state.activeItem === 'help'} data-path="help" onClick={this.navigateFromElement.bind(this)}>
               <Icon name="help circle" />
@@ -73,8 +87,10 @@ class Layout extends React.Component {
         )}
 
         <Segment basic className={this.state.compactMode ? 'compacted main-content' : 'main-content'}>
-          <Button compact floated="right" icon={this.state.compactMode ? 'expand' : 'compress'} onClick={this.toggleCompactMode} />
-          {this.props.children}
+          <div class="compact-button">
+            <Button class="button ui" compact icon={this.state.compactMode ? 'expand' : 'compress'} onClick={this.toggleCompactMode} />
+          </div>
+          <div class="content-area">{this.props.children}</div>
         </Segment>
       </div>
     );

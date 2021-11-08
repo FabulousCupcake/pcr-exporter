@@ -57,6 +57,11 @@ class Logs extends React.Component {
                     {capitalize(entry.source)}
                     {entry.name && <Label.Detail>{entry.name}</Label.Detail>}
                   </Label>
+                  {entry.endpoint && (
+                    <Label color="lightgrey" horizontal>
+                      {entry.endpoint}
+                    </Label>
+                  )}
                   <Feed.Date>{entry.date}</Feed.Date>
                 </Feed.Summary>
                 <Feed.Extra>

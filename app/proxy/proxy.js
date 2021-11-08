@@ -63,15 +63,9 @@ class SWProxy extends EventEmitter {
         const endpoint = ctx.clientToProxyRequest.url;
         const reqRaw = Buffer.concat(ctx.reqChunks);
         const resRaw = Buffer.concat(ctx.resChunks);
-        self.emit('debug', endpoint, reqRaw, resRaw);
 
-        if (global.config.Config.Configuration.ivKey) {
-          // Attempt decrypt here
-          console.log('Attempt decrypt here');
-        } else {
-          // Otherwise just emit raw
-          self.emit(endpoint, reqRaw, resRaw);
-        }
+        self.emit('debug', endpoint, reqRaw, resRaw);
+        self.emit(endpoint, reqRaw, resRaw);
 
         return callback();
       });

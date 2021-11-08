@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 const storage = require('electron-json-storage');
 const windowStateKeeper = require('electron-window-state');
 const _ = require('lodash');
-const Proxy = require('./proxy/Proxy');
+const Proxy = require('./proxy/proxy');
 
 const path = require('path');
 const url = require('url');
@@ -100,7 +100,7 @@ function createWindow() {
   });
 
   global.win.on('minimize', function (event) {
-    if (!config.Config.App.minimizeToTray) return;
+    if (!config.Config.Preferences.minimizeToTray) return;
 
     event.preventDefault();
     bounds = global.win.getBounds();
@@ -140,7 +140,7 @@ function initProxy() {
   });
 
   ipcMain.on('proxyStart', () => {
-    proxy.start(config.Config.Proxy.port);
+    proxy.start(config.Config.Configuration.port);
   });
 
   ipcMain.on('proxyStop', () => {
@@ -178,7 +178,7 @@ function loadPlugins() {
   // Initialize Plugins
   let plugins = [];
 
-  const pluginDirs = [path.join(__dirname, 'plugins'), path.join(global.config.Config.App.filesPath, 'plugins')];
+  const pluginDirs = [path.join(__dirname, 'plugins'), path.join(global.config.Config.Preferences.filesPath, 'plugins')];
 
   // Load each plugin module in the folder
   pluginDirs.forEach((dir) => {
@@ -267,13 +267,13 @@ app.on('ready', () => {
     global.config = _.merge(defaultConfig, data);
     global.config.ConfigDetails = defaultConfigDetails.ConfigDetails;
 
-    fs.ensureDirSync(global.config.Config.App.filesPath);
-    fs.ensureDirSync(path.join(global.config.Config.App.filesPath, 'plugins'));
+    fs.ensureDirSync(global.config.Config.Preferences.filesPath);
+    fs.ensureDirSync(path.join(global.config.Config.Preferences.filesPath, 'plugins'));
 
     global.plugins = loadPlugins();
 
-    if (process.env.autostart || global.config.Config.Proxy.autoStart) {
-      global.proxy.start(process.env.port || config.Config.Proxy.port);
+    if (process.env.autostart || global.config.Config.Preferences.autoStart) {
+      global.proxy.start(process.env.port || config.Config.Preferences.port);
     }
   });
 });

@@ -34,9 +34,14 @@ body {
 }
 
 .compact-button {
-  position: absolute !important;
-  top: 1em;
+  position: fixed !important;
+  z-index: 99999;
+  top: 5.667em;
   right: 1em;
+}
+
+.compacted .compact-button {
+  top: 1em;
 }
 
 .content-area {

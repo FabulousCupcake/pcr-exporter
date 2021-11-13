@@ -1,3 +1,5 @@
+const decrypt = require('./lib/decrypt');
+
 const { app } = require('electron');
 const fs = require('fs');
 const path = require('path');
@@ -37,15 +39,35 @@ const handler = (req, rawRes) => {
   const ivRaw = Buffer.from(ivArray);
   const ivKey = ivRaw.toString('utf8');
 
+  config.Config.Configuration.ivKey = ivKey;
+  win.webContents.send('ivKeyObtained', ivKey);
+
+  try {
+    const reqBody = decrypt(req);
+    proxy.log({
+      type: 'debug',
+      source: 'plugin',
+      name: pluginName,
+      message: `<pre>${reqBody}</pre>`,
+      endpoint,
+    });
+  } catch (err) {
+    proxy.log({
+      type: 'error',
+      source: 'plugin',
+      name: pluginName,
+      message: `Obtained IV key <code>${ivKey}</code> but failed test decryption. Removing IV key.`,
+    });
+    config.Config.Configuration.ivKey = '';
+    win.webContents.send('ivKeyObtained', '');
+  }
+
   proxy.log({
     type: 'success',
     source: 'plugin',
     name: pluginName,
-    message: `Obtained IV Key: <code>${ivKey}</code>`,
+    message: `Obtained IV key: <code>${ivKey}</code>`,
   });
-
-  config.Config.Configuration.ivKey = ivKey;
-  win.webContents.send('ivKeyObtained', ivKey);
 };
 
 const init = (proxy, config) => {

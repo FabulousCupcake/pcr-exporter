@@ -17,6 +17,7 @@
     "appId": "com.electron.pcr-exporter",
     "artifactName": "${productName}-${version}-${os}.${ext}",
     "win": {
+      "icon": "app/assets/icon.ico",
       "target": [
         {
           "target": "nsis",
@@ -29,13 +30,7 @@
     },
     "nsis": {
       "artifactName": "${productName}-Setup-${version}-${os}.${ext}"
-    },
-    "extraFiles": [
-      {
-        "from": "app/assets/icon.ico",
-        "to": "resources"
-      }
-    ]
+    }
   },
   "keywords": [],
   "author": "FabulousCupcake",

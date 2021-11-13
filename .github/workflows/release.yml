@@ -2,7 +2,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'CalVer version tag'
+        description: 'Version tag (e.g. 2021.11.13-1)'
         required: true
 
 name: Upload Release Asset

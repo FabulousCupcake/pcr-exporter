@@ -184,6 +184,7 @@ function loadPlugins() {
   pluginDirs.forEach((dir) => {
     const filteredPlugins = fs.readdirSync(dir).filter((item) => !/(^|\/)\.[^\/\.]/g.test(item));
     filteredPlugins.forEach((file) => {
+      if (file.substr(-2) !== 'js') return;
       const plug = require(path.join(dir, file));
 
       // Check plugin for correct shape

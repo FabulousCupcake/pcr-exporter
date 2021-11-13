@@ -5,12 +5,11 @@ on:
         description: 'Version tag (e.g. 2021.11.13-1)'
         required: true
 
-name: Upload Release Asset
+name: Release
 
 jobs:
   build:
-    if: github.event.base_ref == 'refs/heads/master'
-    name: Upload Release Asset
+    name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

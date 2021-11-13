@@ -7,10 +7,13 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v1
+      - name: Cache dependencies
+        uses: actions/cache@v2
         with:
-          node-version: 14
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install Node.js dependencies
         run: npm install

@@ -16,7 +16,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install Node.js dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run simple linters for PRs
         run: npm run lint

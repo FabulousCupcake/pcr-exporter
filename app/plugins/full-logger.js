@@ -1,8 +1,8 @@
+const decrypt = require('./lib/decrypt');
+
 const { app } = require('electron');
 const fs = require('fs');
 const path = require('path');
-const aesjs = require('aes-js');
-const msgpack5 = require('msgpack5');
 
 // Plugin Metadata
 const pluginName = 'Full Logger';
@@ -43,18 +43,6 @@ ${JSON.stringify(req)}
 ${JSON.stringify(res)}
 =============================================`);
   logfile.end();
-};
-
-// decrypt attempts to decrypt the traffic with the obtained
-const decrypt = (data) => {
-  const aesBody = data.subarray(0, data.length - 32);
-  const aesKey = data.subarray(data.length - 32, data.length);
-  const ivKey = Buffer.from(global.config.Config.Configuration.ivKey, 'utf8');
-
-  const rawBody = new aesjs.ModeOfOperation.cbc(aesKey, ivKey).decrypt(aesBody);
-  const body = rawBody.subarray(0, rawBody.length - rawBody[rawBody.length - 1]);
-  const msgpack = msgpack5().decode(body);
-  return msgpack;
 };
 
 // logDecrypted attempst to decrypt and print/dump the results

@@ -12,12 +12,11 @@ class SettingsPlugin extends React.Component {
   }
 
   render() {
-    const pluginConfig = Object.keys(config.Config.Plugins[this.props.pluginName]).map((key, i) => {
-      let inputType = 'checkbox';
-      const configDetails = config.ConfigDetails.Plugins[this.props.pluginName];
-      if (configDetails && configDetails[key] && configDetails[key].type) {
-        inputType = configDetails[key].type;
-      }
+    const cfg = config.Config.Plugins[this.props.pluginName];
+    const cfgDet = config.ConfigDetails.Plugins[this.props.pluginName];
+
+    const pluginConfigElement = Object.keys(cfg).map((key, i) => {
+      const inputType = cfgDet?.[key]?.type || 'checkbox';
 
       return (
         <Form.Field key={i}>
@@ -25,7 +24,7 @@ class SettingsPlugin extends React.Component {
         </Form.Field>
       );
     });
-    return <Form>{pluginConfig}</Form>;
+    return <Form>{pluginConfigElement}</Form>;
   }
 }
 

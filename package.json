@@ -8,7 +8,7 @@
     "start": "electron .",
     "rebuild": "electron-rebuild -f -w pcr-exporter",
     "pack": "webpack --mode=production",
-    "dist": "electron-builder -w",
+    "dist": "electron-builder -w --publish never",
     "dev": "webpack --watch",
     "lint": "eslint . --ext .js"
   },

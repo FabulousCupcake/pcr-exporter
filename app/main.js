@@ -80,7 +80,7 @@ function createWindow() {
   let bounds = undefined;
   app.whenReady().then(() => {
     const iconExists = fs.existsSync(iconPath);
-    appIcon = new Tray(iconExists ? iconPath : './build/icon.ico');
+    appIcon = new Tray(iconExists ? iconPath : './app/assets/icon.ico');
     appIcon.on('double-click', restoreWindowFromSystemTray);
     const contextMenu = Menu.buildFromTemplate([
       {

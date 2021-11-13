@@ -32,7 +32,7 @@
     },
     "extraFiles": [
       {
-        "from": "build/icon.ico",
+        "from": "app/assets/icon.ico",
         "to": "resources"
       }
     ]

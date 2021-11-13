@@ -25,6 +25,8 @@ jobs:
 
       - name: Build
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           npm version ${{ github.event.inputs.version }}
           npm install
           npm run pack

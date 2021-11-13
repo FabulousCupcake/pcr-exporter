@@ -11,7 +11,6 @@ const url = require('url');
 
 const iconPath = path.join(process.resourcesPath, 'icon.ico');
 
-global.gMapping = require('./mapping');
 global.appVersion = app.getVersion();
 
 let defaultFilePath = path.join(app.getPath('desktop'), `${app.name} Files`);

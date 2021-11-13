@@ -49,17 +49,17 @@ const handler = (req, rawRes) => {
       source: 'plugin',
       name: pluginName,
       message: `<pre>${reqBody}</pre>`,
-      endpoint,
     });
   } catch (err) {
     proxy.log({
       type: 'error',
       source: 'plugin',
       name: pluginName,
-      message: `Obtained IV key <code>${ivKey}</code> but failed test decryption. Removing IV key.`,
+      message: `Obtained IV key <code>${ivKey}</code> but failed test decryption. Removing IV key.<br/>${err}`,
     });
     config.Config.Configuration.ivKey = '';
     win.webContents.send('ivKeyObtained', '');
+    return;
   }
 
   proxy.log({

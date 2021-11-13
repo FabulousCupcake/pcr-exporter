@@ -26,10 +26,6 @@ class Layout extends React.Component {
       this.navigate('preferences', 'preferences');
     });
 
-    Mousetrap.bind(['command+4', 'alt+4'], () => {
-      this.navigate('help', 'help');
-    });
-
     Mousetrap.bind(['command+b', 'ctrl+b'], () => {
       this.toggleCompactMode();
     });
@@ -77,10 +73,6 @@ class Layout extends React.Component {
             >
               <Icon name="paint brush" />
               Preferences
-            </Menu.Item>
-            <Menu.Item name="help" link active={this.state.activeItem === 'help'} data-path="help" onClick={this.navigateFromElement.bind(this)}>
-              <Icon name="help circle" />
-              Help
             </Menu.Item>
             <span id="version">v{appVersion}</span>
           </Menu>

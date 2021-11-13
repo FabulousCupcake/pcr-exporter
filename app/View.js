@@ -6,7 +6,6 @@ import Layout from './pages/Layout';
 import Logs from './pages/Logs';
 import Config from './pages/Config';
 import Preferences from './pages/Preferences';
-import Help from './pages/Help';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -15,7 +14,6 @@ ReactDOM.render(
         <Route exact path="/" component={Logs} />
         <Route exact path="/config" component={Config} />
         <Route exact path="/preferences" component={Preferences} />
-        <Route exact path="/help" component={Help} />
         <Redirect to="/" />
       </Switch>
     </Layout>

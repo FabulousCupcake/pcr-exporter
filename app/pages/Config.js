@@ -82,7 +82,7 @@ class Config extends React.Component {
             label="IV Key"
             action={<Button class="ui button" content="Reset" onClick={this.resetIvKey.bind(this)} />}
             value={this.state.ivKey}
-            placeholder="This will be filled automatically. Read Help for more details."
+            placeholder="This will be filled automatically."
             readOnly
             fluid
           />

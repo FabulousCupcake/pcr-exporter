@@ -1,7 +1,7 @@
 {
   "name": "pcr-exporter",
   "productName": "Priconne Exporter",
-  "version": "0.0.1",
+  "version": "2021.11.13-1",
   "description": "A tool to parse, process, and export intercepted data from Princess Connect! Re:Dive",
   "main": "./app/main.js",
   "scripts": {

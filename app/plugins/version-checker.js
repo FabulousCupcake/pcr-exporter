@@ -1,6 +1,6 @@
 const request = require('request');
-const RELEASES_URL = 'https://api.github.com/repos/Xzandro/sw-exporter/releases/latest';
-const LATEST_DOWNLOAD_URL = '<a href="https://github.com/Xzandro/sw-exporter/releases/latest" target=_blank>Github</a>';
+const RELEASES_URL = 'https://api.github.com/repos/FabulousCupcake/pcr-exporter/releases/latest';
+const LATEST_DOWNLOAD_URL = '<a href="https://github.com/FabulousCupcake/pcr-exporter/releases/latest" target=_blank>Github</a>';
 
 module.exports = {
   defaultConfig: {

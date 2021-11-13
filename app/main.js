@@ -11,7 +11,6 @@ const url = require('url');
 
 const iconPath = path.join(process.resourcesPath, 'icon.ico');
 
-global.gMapping = require('./mapping');
 global.appVersion = app.getVersion();
 
 let defaultFilePath = path.join(app.getPath('desktop'), `${app.name} Files`);
@@ -81,7 +80,7 @@ function createWindow() {
   let bounds = undefined;
   app.whenReady().then(() => {
     const iconExists = fs.existsSync(iconPath);
-    appIcon = new Tray(iconExists ? iconPath : './build/icon.ico');
+    appIcon = new Tray(iconExists ? iconPath : './app/assets/icon.ico');
     appIcon.on('double-click', restoreWindowFromSystemTray);
     const contextMenu = Menu.buildFromTemplate([
       {

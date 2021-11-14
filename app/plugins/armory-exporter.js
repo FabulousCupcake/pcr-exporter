@@ -130,7 +130,7 @@ const handler = (req, rawRes) => {
     type: 'success',
     source: 'plugin',
     name: pluginName,
-    message: `<pre>${importText}</pre>`,
+    clipboard: importText,
   });
 };
 

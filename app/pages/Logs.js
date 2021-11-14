@@ -1,6 +1,7 @@
 import React from 'react';
-import { Header, Feed, Divider, Label, Icon } from 'semantic-ui-react';
+import { Header, Feed, Divider, Label, Icon, Segment, Button } from 'semantic-ui-react';
 import { capitalize, toLower } from 'lodash/string';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const { ipcRenderer } = require('electron');
 const remote = require('@electron/remote');
@@ -62,10 +63,22 @@ class Logs extends React.Component {
                       {entry.endpoint}
                     </Label>
                   )}
+                  {entry.clipboard && (
+                    <CopyToClipboard text={entry.clipboard} options={{ format: 'text/plain' }}>
+                      <Button size="mini" icon compact>
+                        <Icon name="copy" />
+                      </Button>
+                    </CopyToClipboard>
+                  )}
                   <Feed.Date>{entry.date}</Feed.Date>
                 </Feed.Summary>
                 <Feed.Extra>
                   <div dangerouslySetInnerHTML={{ __html: entry.message }} />
+                  {entry.clipboard && (
+                    <Segment size="tiny">
+                      <pre>{entry.clipboard}</pre>
+                    </Segment>
+                  )}
                 </Feed.Extra>
               </Feed.Content>
             </Feed.Event>

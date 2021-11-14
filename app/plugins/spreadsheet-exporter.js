@@ -72,7 +72,7 @@ const handler = (req, rawRes) => {
     type: 'success',
     source: 'plugin',
     name: pluginName,
-    message: `<textarea disabled>${tsv}</textarea>`,
+    clipboard: tsv,
   });
 };
 

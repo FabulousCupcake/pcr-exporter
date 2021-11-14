@@ -12,12 +12,12 @@ const TAB = '	';
 // transformToTSV transforms raw ingame /load/index response body
 // To tab-separated values which can be pasted into spreadsheet nicely
 const transformToTSV = (resBody) => {
-  const fetchShardAmount = charId => resBody.data.item_list.find(i => i.id == `3${charId}`)?.stock || 0;
-  const fetchBondLevel = charId => resBody.data.user_chara_info.find(i => i.chara_id == charId)?.love_level || 0;
+  const fetchShardAmount = (charId) => resBody.data.item_list.find((i) => i.id == `3${charId}`)?.stock || 0;
+  const fetchBondLevel = (charId) => resBody.data.user_chara_info.find((i) => i.chara_id == charId)?.love_level || 0;
 
   const units = resBody.data.unit_list;
-  const tsv = units.map(u => {
-    const id = u.id.toString().substr(0,4);
+  const tsv = units.map((u) => {
+    const id = u.id.toString().substr(0, 4);
     const level = u.unit_level;
     const star = u.unit_rarity;
     const shard = fetchShardAmount(id);
@@ -35,6 +35,7 @@ const transformToTSV = (resBody) => {
     const ue = u.unique_equip_slot[0]?.enhancement_level || 0;
     const bond = fetchBondLevel(id);
 
+    // prettier-ignore
     const columns = [
       id,
       level,

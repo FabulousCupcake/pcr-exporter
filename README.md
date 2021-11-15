@@ -1,4 +1,7 @@
 # Priconne Exporter
+[![Release](https://github.com/FabulousCupcake/pcr-exporter/actions/workflows/release.yml/badge.svg?branch=master)](https://github.com/FabulousCupcake/pcr-exporter/actions/workflows/release.yml)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/FabulousCupcake/pcr-exporter?label=latest-release)](https://github.com/FabulousCupcake/pcr-exporter/releases/latest)
+[![GitHub all releases](https://img.shields.io/github/downloads/FabulousCupcake/pcr-exporter/total)](https://github.com/FabulousCupcake/pcr-exporter/releases/latest)
 
 A tool to parse, process, and export intercepted data from Princess Connect! Re:Dive game client.
 
@@ -17,13 +20,19 @@ This tool was forked from [`Xzandro/sw-exporter`][sw-exporter], with Summoner's 
 Detailed installation steps tailored to specific device/emulators can be found in the [wiki].
 
 ## Plugins
-You can create your own plugins that will receive in-game events and data.  
-What you do with that data is up to your imagination.  
+You can create your own plugins that will receive in-game events and data. What you do with that data is up to your imagination.  
 Take a look at some of the [plugin source code][plugins-source] as reference.
+
+Current plugins:
+- [Full Logger](https://github.com/FabulousCupcake/pcr-exporter/wiki/Full-Logger)
+- [Armory Exporter](https://github.com/FabulousCupcake/pcr-exporter/wiki/Armory-Exporter)
+- [Spreadsheet Exporter](https://github.com/FabulousCupcake/pcr-exporter/wiki/Spreadsheet-Exporter)
 
 ---
 
 More information about the tool can be found in the [GitHub Wiki][wiki-root].
+
+Project plan and to-do list is on [GitHub Projects](https://github.com/FabulousCupcake/pcr-exporter/projects/1).
 
 [releases-latest]: https://github.com/FabulousCupcake/pcr-exporter/releases/latest
 [pcredivewikitw-armory]: https://pcredivewiki.tw/Armory

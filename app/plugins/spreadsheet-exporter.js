@@ -14,6 +14,7 @@ const TAB = '	';
 const transformToTSV = (resBody) => {
   const fetchShardAmount = (charId) => resBody.data.item_list.find((i) => i.id == `3${charId}`)?.stock || 0;
   const fetchBondLevel = (charId) => resBody.data.user_chara_info.find((i) => i.chara_id == charId)?.love_level || 0;
+  const normalizeEquipRefineLevel = (eq) => !eq.is_slot ? -1 : eq.enhancement_level;
 
   const units = resBody.data.unit_list;
   const tsv = units.map((u) => {
@@ -22,12 +23,12 @@ const transformToTSV = (resBody) => {
     const star = u.unit_rarity;
     const shard = fetchShardAmount(id);
     const rank = u.promotion_level;
-    const eq1 = u.equip_slot[0].enhancement_level || 0;
-    const eq2 = u.equip_slot[1].enhancement_level || 0;
-    const eq3 = u.equip_slot[2].enhancement_level || 0;
-    const eq4 = u.equip_slot[3].enhancement_level || 0;
-    const eq5 = u.equip_slot[4].enhancement_level || 0;
-    const eq6 = u.equip_slot[5].enhancement_level || 0;
+    const eq1 = normalizeEquipRefineLevel(u.equip_slot[0]);
+    const eq2 = normalizeEquipRefineLevel(u.equip_slot[1]);
+    const eq3 = normalizeEquipRefineLevel(u.equip_slot[2]);
+    const eq4 = normalizeEquipRefineLevel(u.equip_slot[3]);
+    const eq5 = normalizeEquipRefineLevel(u.equip_slot[4]);
+    const eq6 = normalizeEquipRefineLevel(u.equip_slot[5]);
     const ub = u.union_burst[0].skill_level;
     const sk1 = u.main_skill?.[0]?.skill_level || 0;
     const sk2 = u.main_skill?.[1]?.skill_level || 0;

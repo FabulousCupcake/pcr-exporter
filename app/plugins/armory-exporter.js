@@ -54,8 +54,9 @@ const transformUnitList = (units) => {
 
   // Try to preserve target rank if there are any
   const targetData = cfg.targetRankSource ? parseTargetData(cfg.targetRankSource) : {};
-
-  const result = units.map((u) => ({
+  const targetUnitList = Object.keys(targetData)
+  
+  const exportedUnitData = units.map((u) => ({
     u: convertId(u.id),
     e: convertEq(u.equip_slot),
     r: u.unit_rarity,
@@ -63,6 +64,26 @@ const transformUnitList = (units) => {
     q: u.unique_equip_slot[0]?.enhancement_level || 0,
     t: targetData[convertId(u.id)] || false,
   }));
+  
+  const unitMapper = new Map(exportedUnitData.map(v=>[v.u]))
+  
+  // check for units which have armory target ranks but are not in exported unit list, assign default 3-star and 1-0 equip
+  
+  let result = [...exportedUnitData]
+  targetUnitList.forEach(val => {
+    if (!unitMapper.has(val)) {
+      result.push({
+        "e": "000000",
+        "p": 1,
+        "r": "3",
+        "u": val,
+        "t": targetData[val],
+        "q": 0
+      })
+    }
+  })
+
+  result.sort((a, b) => a.u.localeCompare(b.u))
 
   return result;
 };

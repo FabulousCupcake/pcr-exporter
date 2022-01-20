@@ -66,15 +66,16 @@ const transformUnitList = (units) => {
 
   // Find all target units the user does not own
   // These should be retained, with the unit data set to all minimum (rank 1, level 1, …)
-  Object.keys(targetData).filter(t => !result.find(u => u.u == t)).forEach(t => {
-    result.push({
-      u: t,
-      e: "000000",
-      r: 3,
-      p: 1,
-      q: 0,
-      t: targetData[t],
-    });
+  Object.keys(targetData).filter(t => !result.find(u => u.u == t))
+    .forEach(t => {
+      result.push({
+        u: t,
+        e: "000000",
+        r: 3,
+        p: 1,
+        q: 0,
+        t: targetData[t],
+      });
   });
   
   return result;

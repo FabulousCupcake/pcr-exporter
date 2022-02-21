@@ -12,11 +12,20 @@ const TAB = '	';
 // transformToTSV transforms raw ingame /load/index response body
 // To tab-separated values which can be pasted into spreadsheet nicely
 const transformToTSV = (resBody) => {
+  const fetchBondLevel = (readStoryIds, charId) => {
+    return readStoryIds
+      .map((id) => id.toString())
+      .filter((id) => id.substr(0, 4) == charId)
+      .map((id) => parseInt(id.substr(4, 3), 10))
+      .reduce((a, b) => Math.max(a, b), 0);
+  };
+
   const fetchShardAmount = (charId) => resBody.data.item_list.find((i) => i.id == `3${charId}`)?.stock || 0;
-  const fetchBondLevel = (charId) => resBody.data.user_chara_info.find((i) => i.chara_id == charId)?.love_level || 0;
   const normalizeEquipRefineLevel = (eq) => (!eq.is_slot ? -1 : eq.enhancement_level);
 
-  const units = resBody.data.unit_list;
+  const units = resBody.unit_list;
+  const readStoryIds = resBody.read_story_ids;
+
   const tsv = units.map((u) => {
     const id = u.id.toString().substr(0, 4);
     const level = u.unit_level;
@@ -34,7 +43,7 @@ const transformToTSV = (resBody) => {
     const sk2 = u.main_skill?.[1]?.skill_level || 0;
     const ex = u.ex_skill?.[0]?.skill_level || 0;
     const ue = u.unique_equip_slot[0]?.enhancement_level || 0;
-    const bond = fetchBondLevel(id);
+    const bond = fetchBondLevel(readStoryIds, id);
 
     // prettier-ignore
     const columns = [

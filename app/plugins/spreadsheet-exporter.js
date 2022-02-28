@@ -20,7 +20,7 @@ const transformToTSV = (resBody) => {
       .reduce((a, b) => Math.max(a, b), 0);
   };
 
-  const fetchShardAmount = (charId) => resBody.data.item_list.find((i) => i.id == `3${charId}`)?.stock || 0;
+  const fetchShardAmount = (charId) => resBody.item_list.find((i) => i.id == `3${charId}`)?.stock || 0;
   const normalizeEquipRefineLevel = (eq) => (!eq.is_slot ? -1 : eq.enhancement_level);
 
   const units = resBody.unit_list;
@@ -76,7 +76,7 @@ const handler = (req, rawRes) => {
   if (!global.config.Config.Configuration.ivKey) return;
 
   const res = Buffer.from(rawRes.toString('utf8'), 'base64');
-  const resBody = decrypt(res);
+  const resBody = decrypt(res).data;
   const tsv = transformToTSV(resBody);
 
   proxy.log({

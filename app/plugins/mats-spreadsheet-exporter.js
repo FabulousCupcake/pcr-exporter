@@ -74,7 +74,7 @@ const parseMaterialData = (resBody) => {
 // To tab-separated values which can be pasted into spreadsheet nicely
 const transformToTSV = (resBody) => {
   const data = parseMaterialData(resBody);
-  const tsv = data.forEach(row => {
+  const tsv = data.map((row) => {
     return [row.name, row.amount].join(TAB);
   });
 
@@ -86,7 +86,7 @@ const handler = (req, rawRes) => {
   if (!global.config.Config.Configuration.ivKey) return;
 
   const res = Buffer.from(rawRes.toString('utf8'), 'base64');
-  const resBody = decrypt(res);
+  const resBody = decrypt(res).data;
   const tsv = transformToTSV(resBody);
 
   proxy.log({

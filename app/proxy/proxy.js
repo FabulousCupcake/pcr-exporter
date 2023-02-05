@@ -6,13 +6,13 @@ const os = require('os');
 const net = require('net');
 const url = require('url');
 const uuidv4 = require('uuid/v4');
-const Proxy = require('http-mitm-proxy');
+const Proxy = require('http-mitm-proxy').Proxy;
 const { differenceInMonths } = require('date-fns');
 
 const { promisify } = require('util');
 const sleep = promisify(setTimeout);
 
-const CERT_MAX_LIFETIME_IN_MONTHS = 24;
+const CERT_MAX_LIFETIME_IN_MONTHS = 12;
 const API_HOST = 'priconne-redive.us';
 
 class SWProxy extends EventEmitter {
@@ -26,7 +26,7 @@ class SWProxy extends EventEmitter {
   }
   async start(port) {
     const self = this;
-    this.proxy = Proxy();
+    this.proxy = new Proxy();
 
     this.proxy.onError(function (ctx, e, errorKind) {
       if (e.code === 'EADDRINUSE') {
@@ -38,6 +38,7 @@ class SWProxy extends EventEmitter {
       if (ctx.clientToProxyRequest.headers.host !== API_HOST) {
         return callback(); // Not pricon, don't care
       }
+      self.log({ type: 'info', source: 'proxy', message: 'Received request.' });
 
       // Automatically decompress if gzipped
       ctx.use(Proxy.gunzip);

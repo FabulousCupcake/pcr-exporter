@@ -20,7 +20,8 @@ const transformToTSV = (resBody) => {
       .reduce((a, b) => Math.max(a, b), 0);
   };
 
-  const fetchShardAmount = (charId) => resBody.item_list.find((i) => i.id == `3${charId}`)?.stock || 0;
+  const fetchShardAmount = (charId) => resBody.data.item_list.find((i) => i.id == `3${charId}`)?.stock || 0;
+  const fetchPureShardAmount = (charId) => resBody.data.item_list.find((i) => i.id == `3${charId + 1000}`)?.stock || 0;
   const normalizeEquipRefineLevel = (eq) => (!eq.is_slot ? -1 : eq.enhancement_level);
 
   const units = resBody.unit_list;
@@ -31,6 +32,7 @@ const transformToTSV = (resBody) => {
     const level = u.unit_level;
     const star = u.unit_rarity;
     const shard = fetchShardAmount(id);
+    const pureShard = fetchPureShardAmount(parseInt(id, 10));
     const rank = u.promotion_level;
     const eq1 = normalizeEquipRefineLevel(u.equip_slot[0]);
     const eq2 = normalizeEquipRefineLevel(u.equip_slot[1]);
@@ -51,6 +53,7 @@ const transformToTSV = (resBody) => {
       level,
       star,
       shard,
+      pureShard,
       rank,
       eq1,
       eq2,

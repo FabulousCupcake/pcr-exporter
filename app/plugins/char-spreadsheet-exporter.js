@@ -3,8 +3,8 @@ const decrypt = require('./lib/decrypt');
 // Plugin Metadata
 const defaultConfig = { enabled: true };
 const defaultConfigDetails = {};
-const pluginName = 'Spreadsheet Exporter';
-const pluginDescription = 'Exports unit data into tab-separated values format that can be pasted into spreadsheets';
+const pluginName = 'Character Spreadsheet Exporter';
+const pluginDescription = 'Exports character data into tab-separated values format that can be pasted into spreadsheets';
 
 // Tab character…
 const TAB = '	';
